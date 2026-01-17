@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locomotion Diary - User Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Merriweather:wght@300;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fdfdfd;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Merriweather', serif;
+            color: #2c3e50;
+        }
+
+        h1 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            margin-top: 3rem;
+            border-top: 1px solid #eee;
+            padding-top: 1rem;
+        }
+
+        .toc {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            margin-bottom: 3rem;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+            font-size: 1.2rem;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+
+        .toc a {
+            text-decoration: none;
+            color: #3498db;
+            font-weight: 500;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: #2c3e50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-bottom: 2rem;
+        }
+
+        .box {
+            background: #e3f2fd;
+            padding: 1rem;
+            border-left: 4px solid #2196f3;
+            margin: 1.5rem 0;
+        }
+
+        img {
+            max-width: 100%;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin: 1rem 0;
+        }
+
+        .back-to-top {
+            display: block;
+            margin-top: 1rem;
+            color: #999;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="index.html" class="back-btn">← Back to App</a>
+    <h1>User Guide 📖</h1>
+    <p>A complete reference manual for your Locomotion Diary.</p>
+
+    <div class="toc">
+        <h3>Table of Contents</h3>
+        <ul>
+            <li><a href="#features">1. All Features</a></li>
+            <li><a href="#audience">2. Who can use it?</a></li>
+            <li><a href="#usage">3. How to use it (Workflow)</a></li>
+            <li><a href="#proximity">4. Proximity Radius Setup</a></li>
+            <li><a href="#ebook">5. Creating Diary / E-Book</a></li>
+            <li><a href="#integration">6. Data Integration</a></li>
+            <li><a href="#import">7. Importing JSON Data</a></li>
+            <li><a href="#manual">8. Manual Creation of Events</a></li>
+            <li><a href="#filtering">9. Filtering Events</a></li>
+            <li><a href="#export">10. Exporting Data (JSON & PDF)</a></li>
+            <li><a href="#enhance">11. Enhance Scanner</a></li>
+            <li><a href="#naming">12. Naming Locations</a></li>
+            <li><a href="#mechanics">13. How the App Works</a></li>
+            <li><a href="#install">14. Download & Install</a></li>
+            <li><a href="#privacy">15. Privacy and Safety</a></li>
+        </ul>
+    </div>
+
+    <section id="features">
+        <h2>1. All Features</h2>
+        <ul>
+            <li><strong>Map Visualization:</strong> Interactive maps for every journey.</li>
+            <li><strong>Data Enhancement:</strong> Auto-fetches Weather and Addresses.</li>
+            <li><strong>Statistics:</strong> Visual charts of your travel habits.</li>
+            <li><strong>PDF Export:</strong> Creates print-ready E-Books.</li>
+            <li><strong>Offline Capable:</strong> Works without internet (PWA).</li>
+        </ul>
+        <a href="#" class="back-to-top">↑ Top</a>
+    </section>
+
+    <section id="audience">
+        <h2>2. Who can use it?</h2>
+        <p>Anyone with a Google Account! It is designed for Travelers, Journalers, Quantified-Self enthusiasts, and
+            digital archivists looking to preserve their history.</p>
+        <a href="#" class="back-to-top">↑ Top</a>
+    </section>
+
+    <section id="usage">
+        <h2>3. How to use it (Workflow)</h2>
+        <ol>
+            <li><strong>Import:</strong> Load your Google Takeout file.</li>
+            <li><strong>Clean:</strong> Use the "Places" menu to fix location names.</li>
+            <li><strong>Enhance:</strong> Run the scanner to fill in missing addresses.</li>
+            <li><strong>Export:</strong> Generate your PDF E-book.</li>
+        </ol>
+        <a href="#" class="back-to-top">↑ Top</a>
+    </section>
+
+    <section id="proximity">
+        <h2>4. Proximity Radius Setup</h2>
+        <p>Located in <strong>Places > Settings</strong>.</p>
+        <ul>
+            <li><strong>Definition:</strong> The distance within which two GPS points are considered the "Same Place".
+            </li>
+            <li><strong>Small (50m):</strong> High precision. Distinguishes neighbors.</li>
+            <li><strong>Large (500m):</strong> Groups broad areas (e.g., "Airport Complex") into one location.</li>
+        </ul>
+        <a href="#" class="back-to-top">↑ Top</a>
+    </section>
+
+    <section id="ebook">
+        <h2>5. Creating Diary / E-Book</h2>
+        <p>Turn your data into a book.</p>
+        <ol>
+            <li>Filter to the desired date range.</li>
+            <li>Click <strong>🖨️ PDF</strong> in the header.</li>
+            <li><strong>Crucial:</strong> Enable "Background Graphics" in your printer settings to see colors!</li>
+        </ol>
+        <a href="#" class="back-to-top">↑ Top</a>
+    </section>
+
+    <section id="integration">
+        <h2>6. Data Integration</h2>
+        <p>The app integrates with third-party apis directly from your browser:</p>
+        <ul>
+            <li><strong>Weather:</strong> Connects to Open-Meteo for historical weather data.</li>
+            <li><strong>Photos:</strong> Generates smart links to your Google Photos library based on timestamps.</li>
+            <li><strong>Maps:</strong> Uses OpenStreetMap for tiles and geocoding.</li>
+        </ul>
+        <a href="#" class="back-to-top">↑ Top</a>
+    </section>
+
+    <section id="import">
+        <h2>7. Importing JSON Data</h2>
+        <ol>
+            <li>Download your data from <a href="https://takeout.google.com/" target="_blank">Google Takeout</a>.</li>
+            <li>Unzip the file and find <code>Records.json</code> (or individual year files).</li>
+            <li>Drag & Drop the file onto the app's Start Screen.</li>
+        </ol>
+        <a href="#" class="back-to-top">↑ Top</a>
+    </section>
+
+    <section id="manual">
+        <h2>8. Manual Creation of Events</h2>
+        <p>Missing a day? Click the <strong>➕ Add</strong> button.</p>
+        <ul>
+            <li><strong>Stationary:</strong> Log a stay at a specific place.</li>
+            <li><strong>Moving:</strong> Log a journey between two points.</li>
+            <li>Use the <strong>Map Picker</strong> to pin exact coordinates.</li>
+        </ul>
+        <a href="#" class="back-to-top">↑ Top</a>
+    </section>
+
+    <section id="filtering">
+        <h2>9. Filtering Events</h2>
+        <p>Use the Search Bar to drill down:</p>
+        <ul>
+            <li><strong>Date:</strong> Select Year/Month.</li>
+            <li><strong>Location:</strong> e.g., "London".</li>
+            <li><strong>Activity:</strong> e.g., "Cycling" or "Train".</li>
+            <li><strong>Text:</strong> Search inside your personal notes.</li>
+        </ul>
+        <a href="#" class="back-to-top">↑ Top</a>
+    </section>
+
+    <section id="export">
+        <h2>10. Exporting Data (JSON & PDF)</h2>
+        <ul>
+            <li><strong>PDF:</strong> For reading/printing (Visual).</li>
+            <li><strong>JSON:</strong> For backup. Go to the "Data" menu to download your edited database as a raw file.
+            </li>
+        </ul>
+        <a href="#" class="back-to-top">↑ Top</a>
+    </section>
+
+    <section id="enhance">
+        <h2>11. Enhance Scanner</h2>
+        <p><strong>What it does:</strong> Scans for "Unknown Locations" and finds their real address.</p>
+        <p><strong>Why?</strong> Google data often only has coordinates. This makes your diary readable (e.g., "Home"
+            instead of "51.50, -0.12").</p>
+        <a href="#" class="back-to-top">↑ Top</a>
+    </section>
+
+    <section id="naming">
+        <h2>12. Naming Locations</h2>
+        <p>To rename a place:</p>
+        <ol>
+            <li>Click the Pencil Icon (✎) next to any location name.</li>
+            <li>Type the new name (e.g., "My Office").</li>
+            <li><strong>Effect:</strong> This renames <em>all</em> future and past visits to this spot (within the
+                Proximity Radius).</li>
+        </ol>
+        <a href="#" class="back-to-top">↑ Top</a>
+    </section>
+
+    <section id="mechanics">
+        <h2>13. How the App Works?</h2>
+        <p>It is a Single Page Application (SPA). It loads entirely into your browser's memory and uses
+            <strong>IndexedDB</strong> to store your data locally. There is NO "Cloud" storage.
+        </p>
+        <a href="#" class="back-to-top">↑ Top</a>
+    </section>
+
+    <section id="install">
+        <h2>14. Download & Install</h2>
+        <ul>
+            <li><strong>Chrome/Edge:</strong> Look for the "Install" icon in the address bar.</li>
+            <li><strong>Mobile:</strong> Use "Add to Home Screen" in your browser menu.</li>
+        </ul>
+        <a href="#" class="back-to-top">↑ Top</a>
+    </section>
+
+    <section id="privacy">
+        <h2>15. Privacy and Safety</h2>
+        <div class="box">
+            <strong>Zero Knowledge.</strong> We cannot see your data. It lives on your device. If you delete your
+            browser cache, the data is gone—so keep backups!
+        </div>
+        <a href="#" class="back-to-top">↑ Top</a>
+    </section>
+
+    <br><br>
+    <br><br>
+    <p style="text-align:center; color:#999;">
+        Created by <a href="https://github.com/sibyperiyar" style="color:#777; text-decoration:none;">Siby Periyar</a> •
+        2026
+    </p>
+
+</body>
+
+</html>

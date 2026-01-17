@@ -1,0 +1,162 @@
+/* Stats / Analytics Dashboard */
+#analytics-content {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Dashboard Grid Structure */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 2rem;
+}
+
+@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 1. Stat Cards (Top Left) */
+.stat-cards-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    align-content: flex-start;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.stat-card.hero {
+    background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+    color: white;
+    grid-column: span 2;
+    /* Full width on top */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 140px;
+}
+
+.stat-card.hero h3 {
+    opacity: 0.9;
+    margin: 0;
+    font-size: 1.1em;
+}
+
+.stat-card.hero p {
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 5px;
+    font-size: 0.9em;
+}
+
+.big-number {
+    font-size: 3rem;
+    font-weight: 800;
+    margin: 0.5rem 0;
+    color: #1F2937;
+}
+
+.hero .big-number {
+    color: white;
+    margin: 0;
+}
+
+.unit {
+    font-size: 0.4em;
+    opacity: 0.7;
+    font-weight: normal;
+    vertical-align: middle;
+}
+
+/* 2. Chart Container (Pie) */
+.box-style {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.chart-container h3,
+.heatmap-container h3 {
+    margin-top: 0;
+    color: #374151;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #f3f4f6;
+    padding-bottom: 0.8rem;
+}
+
+/* 3. Heatmap Grid */
+.heatmap-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 10px 0;
+    justify-content: flex-start;
+    /* or center */
+}
+
+.heat-cell {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    background-color: #ebedf0;
+    /* default empty */
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.heat-cell:hover {
+    transform: scale(1.4);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+/* GitHub-like Green Scale */
+.heat-cell[data-level="1"] {
+    background-color: #9be9a8;
+}
+
+.heat-cell[data-level="2"] {
+    background-color: #40c463;
+}
+
+.heat-cell[data-level="3"] {
+    background-color: #30a14e;
+}
+
+.heat-cell[data-level="4"] {
+    background-color: #216e39;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+    .stat-card.hero {
+        grid-column: span 1;
+    }
+
+    .stat-cards-container {
+        grid-template-columns: 1fr;
+    }
+
+    .heat-cell {
+        width: 10px;
+        height: 10px;
+        gap: 2px;
+    }
+}
