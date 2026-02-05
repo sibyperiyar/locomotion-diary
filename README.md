@@ -1,12 +1,14 @@
 # Locomotion Diary 📍
 
-**A private, offline-first travel diary. Import your Google Location History or build it from scratch.**
+**A private, offline-first travel diary.**
 
-![License](https://img.shields.io/badge/license-GPLv2-blue.svg)
+![License](https://img.shields.io/badge/license-Proprietary-red.svg)
 
 ## 📖 About
 
 Locomotion Diary is a **Progressive Web App (PWA)** that runs entirely in your browser. It is designed to be the "Forever Home" for your location memories.
+
+**Developed by Zetozone for internal and authorized use.**
 
 **Two Ways to Use:**
 
@@ -21,20 +23,17 @@ Locomotion Diary is a **Progressive Web App (PWA)** that runs entirely in your b
 * 🔒 **Privacy First:** 100% Offline processing. Data lives in your browser's IndexedDB.
 * 🖨️ **E-Book Export:** Generate a professional PDF diary for printing.
 
-## 🚀 Hosting (GitHub Pages)
+## 🚀 Hosting
 
-Since this is a client-side app, you can host it for free on GitHub Pages.
-
-1. **Create Repo:** New repository named `locomotion-diary`.
-2. **Upload:** Pust these files to the `main` branch.
-3. **Enable Pages:** Go to `Settings > Pages`, select `main` branch, and save.
-4. **Done:** Your app is live!
+This app is distributed via **Zetozone**.
 
 ## 🤝 Credits
 
-* **Project Lead:** Siby Periyar ([@sibyperiyar](https://github.com/sibyperiyar))
+* **Project Owner:** Zetozone
+* **Project Lead:** Siby Periyar
 * **Development:** AI Assistance (Google Gemini)
 
 ## 📜 License
 
-Distributed under the **GPLv2** License. See `LICENSE` for more information.
+**Copyright (c) 2026 Zetozone. All Rights Reserved.**
+Unauthorized copying, modification, distribution, or use of this file, via any medium, is strictly prohibited.

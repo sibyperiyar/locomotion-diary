@@ -12,11 +12,20 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap"
         rel="stylesheet">
 
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
     <!-- CSS -->
-    <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="css/style.css?v=5">
-    <link rel="stylesheet" href="css/stats.css?v=5">
+    <!-- <link rel="manifest" href="manifest.json"> -->
+    <link rel="stylesheet" href="css/style.css?v=204">
+    <link rel="stylesheet" href="css/binder.css?v=4">
+    <link rel="stylesheet" href="css/stats.css?v=7">
     <meta name="theme-color" content="#f8f5f2">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3238/3238016.png">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3238/3238016.png">
 
     <!-- Critical Stats CSS Inline (Fallback) -->
@@ -91,6 +100,24 @@
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+        /* Fail-safe Grid CSS */
+        .months-grid {
+            display: grid !important;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+            gap: 1.5rem !important;
+            padding: 1rem 0 !important;
+        }
+
+        .archive-card {
+            display: flex !important;
+            flex-direction: column !important;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eee;
+        }
+    </style>
 </head>
 
 <body>
@@ -114,8 +141,9 @@
                 </div>
 
                 <div class="privacy-note">
-                    <p>🔒 <strong>Private & Secure:</strong> Your data is processed entirely on your device. Nothing is
-                        uploaded to any server.</p>
+                    <p style="text-align:center; color:#999;">
+                        &copy; 2026 Zetozone. All Rights Reserved.
+                    </p>
                 </div>
                 <div style="margin-top: 1rem;">
                     <a href="javascript:void(0)" id="btn-help-toggle" style="color: #666; text-decoration: underline;">❓
@@ -133,22 +161,55 @@
                     <select id="year-switcher" class="nav-btn secondary"
                         style="font-size: 1.5rem; border: none; background: transparent; font-weight: bold; cursor: pointer; color: inherit;"></select>
                 </div>
+                <div class="header-center">
+                    <select id="lang-switcher" class="nav-btn secondary" title="Language / भाषा / ഭാഷ"
+                        style="border: 1px solid var(--border-color);">
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                        <option value="zh">中文 (Chinese)</option>
+                        <option value="ja">日本語 (Japanese)</option>
+                        <option value="ru">Русский</option>
+                        <option value="ar">العربية</option>
+                        <option value="pt">Português</option>
+                        <option value="hi">Hindi</option>
+                        <option value="ml">Malayalam</option>
+                    </select>
+                </div>
                 <div class="actions">
                     <button id="btn-add-entry" class="nav-btn primary-btn" title="Add Manual Entry"
-                        style="background-color: #2e7d32; color: white;">➕ Add</button>
-                    <button id="btn-import" class="nav-btn" title="Import new data">📥 Import</button>
-                    <button id="btn-stats" class="nav-btn" title="View Statistics">📊 Stats</button>
-                    <button id="btn-archives" class="nav-btn" title="View Archives">📂 Archives</button>
-                    <button id="btn-locations" class="nav-btn" title="Manage Places">📍 Places</button>
-                    <button id="btn-export" class="nav-btn" title="Save as PDF">🖨️ PDF</button>
+                        style="background-color: #2e7d32; color: white;" data-i18n="btn.add">➕ Add</button>
+                    <button id="btn-sort" class="nav-btn" title="Toggle Sort Order (Newest/Oldest)"
+                        style="margin-left: 5px;">⬇️ Sort</button>
+                    <button id="btn-import" class="nav-btn" title="Import new data" data-i18n="btn.import">📥
+                        Import</button>
+                    <button id="btn-photos" class="nav-btn" title="Link Photos Folder">🖼️ Photos</button>
+                    <button id="btn-theme" class="nav-btn" title="Toggle Dark Mode"
+                        data-i18n="btn.theme.dark">🌙</button>
+                    <button id="btn-stats" class="nav-btn" title="View Statistics" data-i18n="btn.stats">📊
+                        Stats</button>
+                    <button id="btn-archives" class="nav-btn" title="View Archives" data-i18n="btn.archives">📂
+                        Archives</button>
+                    <button id="btn-binder" class="nav-btn" style="background-color: #5d4037; color: white;"
+                        title="Legacy Binder">📔 Binder</button>
+                    <button id="btn-locations" class="nav-btn" title="Manage Places" data-i18n="btn.locations">📍
+                        Places</button>
+                    <button id="btn-export" class="nav-btn" title="Save as PDF" data-i18n="btn.export">🖨️ PDF</button>
                     <button id="btn-help-header" class="nav-btn secondary-btn" title="Help"
                         style="margin-left: 10px;">❓</button>
+
                     <!-- Missing buttons restored -->
                     <button id="btn-export-json" class="nav-btn" title="Export JSON">💾 JSON</button>
                     <button id="btn-weather" class="nav-btn" title="Fetch Weather"
                         onclick="console.log('Direct Click'); if(window.fetchWeatherForCurrentView) window.fetchWeatherForCurrentView(); else alert('Function not found!');">☁️
                         Weather</button>
                     <button id="btn-enhance" class="nav-btn" title="Enhance Data">✨ Enhance</button>
+                    <!-- Enhance Controls (Hidden by default) -->
+                    <span id="enhance-controls" style="display: none;">
+                        <button id="btn-pause" class="nav-btn">⏸ Pause</button>
+                        <button id="btn-stop" class="nav-btn">⏹ Stop</button>
+                    </span>
                     <button id="btn-settings" class="nav-btn" title="Configure Settings">⚙️</button>
                     <!-- New Data Management -->
                     <button id="btn-manage-data" class="nav-btn danger-btn" title="Manage Data">🗑️ Data</button>
@@ -211,401 +272,634 @@
             </div>
         </section>
 
-    </div>
 
-    <!-- View 3: Location Manager -->
-    <section id="view-locations">
-        <header class="book-header">
-            <button id="btn-back-loc" class="nav-btn">← Back to Diary</button>
-            <h2>Location Manager</h2>
-            <div class="actions">
-                <span style="font-size: 0.9em; color: #666; margin-right: 10px;">Bulk rename nearby places</span>
-            </div>
-        </header>
-        <div class="book-pages location-manager-container">
-            <table id="locations-table">
-                <thead>
-                    <tr>
-                        <th style="width: 50px;">#</th>
-                        <th>Coords (Map)</th>
-                        <th>App Suggested Name</th>
-                        <th>Current Name</th>
-                        <th style="width: 100px;">Action</th>
-                    </tr>
-                </thead>
-                <tbody id="locations-table-body">
-                    <!-- Dynamic Rows -->
-                </tbody>
-            </table>
-        </div>
-    </section>
 
-    <!-- View 4: Stats Dashboard -->
-    <section id="view-stats" class="view-section">
-        <header class="book-header">
-            <h2>Life Analytics</h2>
-            <div class="actions">
-                <button class="nav-btn" onclick="switchView('book')">← Back to Diary</button>
-            </div>
-        </header>
-        <div id="stats-content" class="container"></div>
-    </section>
-
-    <!-- View 5: Archives -->
-    <section id="view-archives" class="view-section">
-        <header class="book-header">
-            <button id="btn-back-arch" class="nav-btn">← Back to Diary</button>
-            <h2>Monthly Archives</h2>
-        </header>
-        <div class="book-pages" style="max-width: 1000px; margin: 0 auto; padding: 2rem;">
-            <div id="archives-grid" class="archives-grid">
-                <!-- Dynamic Months -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Edit Location Modal -->
-    <div id="location-modal" class="modal-overlay" style="display: none;">
-        <div class="modal">
-            <h3>Edit Location</h3>
-            <p class="modal-subtitle">Save a custom name for this place.</p>
-
-            <div class="input-group">
-                <label for="location-input">Name</label>
-                <input type="text" id="location-input" list="location-suggestions"
-                    placeholder="e.g. Home, Office, Gym..." autocomplete="off">
-                <datalist id="location-suggestions">
-                    <!-- Dynamic suggestions will be populated here -->
-                </datalist>
-            </div>
-
-            <div class="modal-actions">
-                <button id="btn-modal-cancel" class="btn secondary">Cancel</button>
-                <button id="btn-modal-save" class="btn primary">Save</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Map Modal -->
-    <div id="map-modal" class="modal-overlay" style="display: none;">
-        <div class="map-modal-content"
-            style="background: white; padding: 1rem; border-radius: 12px; position: relative;">
-            <h3 style="margin: 0 0 1rem 0; font-family: 'Georgia', serif; color: #444;">Journey Map</h3>
-            <div id="map-container" style="border-radius: 8px; border: 1px solid #ddd;"></div>
-            <button class="close-btn btn secondary" style="align-self: flex-end; margin-top: 1rem;">Close</button>
-        </div>
-    </div>
-
-    <!-- Import Options Modal -->
-    <div id="import-modal" class="modal-overlay" style="display: none;">
-        <div class="modal" style="max-width: 500px;">
-            <h3 style="margin-bottom: 10px;">Import JSON Data</h3>
-            <p id="import-summary" style="margin-bottom: 20px; color: #666; font-size: 0.9em;"></p>
-
-            <div class="input-group">
-                <label>Import Mode</label>
-                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
-                    <label style="font-weight: normal; cursor: pointer;">
-                        <input type="radio" name="import-mode" value="merge" checked>
-                        <strong>Merge</strong> (Keep existing Notes)
-                    </label>
-                    <label style="font-weight: normal; cursor: pointer;">
-                        <input type="radio" name="import-mode" value="replace">
-                        <strong>Replace</strong> (Overwrite collisions)
-                    </label>
+        <!-- View 3: Location Manager -->
+        <section id="view-locations">
+            <header class="book-header">
+                <button id="btn-back-loc" class="nav-btn">← Back to Diary</button>
+                <h2>Location Manager</h2>
+                <div class="actions">
+                    <button id="btn-import-places" class="nav-btn secondary" style="margin-right:5px;">📥 Import
+                        Places</button>
+                    <button id="btn-export-places" class="nav-btn secondary">📤 Export Places</button>
                 </div>
+            </header>
+            <div class="book-pages location-manager-container">
+                <input type="file" id="places-file-input" accept=".json" hidden>
+                <table id="locations-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th>Coords (Map)</th>
+                            <th>App Suggested Name</th>
+                            <th>Current Name</th>
+                            <th style="width: 100px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="locations-table-body">
+                        <!-- Dynamic Rows -->
+                    </tbody>
+                </table>
             </div>
+        </section>
 
-            <!-- Future: Date Range Filter could go here -->
-            <div class="input-group">
-                <label>Filter by Date Range (Optional)</label>
-                <div style="display: flex; gap: 10px;">
-                    <input type="date" id="import-date-from" style="flex:1;">
-                    <input type="date" id="import-date-to" style="flex:1;">
-                </div>
-            </div>
+        <!-- View 4: Stats Dashboard -->
 
-            <div class="modal-actions">
-                <button id="btn-import-cancel" class="btn secondary">Cancel</button>
-                <button id="btn-import-confirm" class="btn primary">Start Import</button>
-            </div>
-        </div>
-    </div>
 
-    <div id="export-overlay"
-        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; text-align: center;">
-        <div style="font-size: 4em; margin-bottom: 20px;">🖨️</div>
-        <h2 style="font-family: inherit; color: #333; margin: 0 0 10px;">Preparing PDF...</h2>
-        <p style="color: #666; max-width: 400px; line-height: 1.5;">Please wait while we render your diary.</p>
-        <div
-            style="margin-top: 30px; padding: 15px; background: #e8f5e9; border-radius: 8px; color: #2e7d32; border: 1px solid #c8e6c9;">
-            <strong>Next Step:</strong><br>When the system dialog appears,<br>choose "Save as PDF".
-        </div>
-    </div>
+        <!-- View 5: Archives -->
 
-    <!-- Location Picker Modal -->
-    <div id="location-picker-modal" class="modal-overlay" style="display: none; z-index: 10001;">
-        <div class="modal" style="width: 90%; height: 80%; max-width: 800px; display: flex; flex-direction: column;">
-            <h3>Pick a Location</h3>
-            <p class="small" style="margin-bottom: 10px;">Click on the map to select a point.</p>
-            <div id="picker-map" style="flex: 1; border: 1px solid #ddd; border-radius: 4px; background: #eee;"></div>
-            <div class="modal-actions" style="margin-top: 10px;">
-                <button id="btn-picker-cancel" class="btn secondary">Cancel</button>
-                <button id="btn-picker-confirm" class="btn primary">Confirm Selection</button>
-            </div>
-        </div>
-    </div>
 
-    <!-- Manual Entry Modal -->
-    <div id="manual-entry-modal" class="modal-overlay" style="display: none;">
-        <div class="modal" style="max-width: 600px;">
-            <h3>Add New Entry</h3>
-            <form id="manual-entry-form">
-                <div class="tab-group">
-                    <button type="button" class="tab-btn active" data-tab="stationary">📍 Stay</button>
-                    <button type="button" class="tab-btn" data-tab="moving">🚗 Journey</button>
-                    <input type="hidden" id="entry-type" value="stationary">
-                </div>
+        <!-- Edit Location Modal -->
+        <div id="location-modal" class="modal-overlay" style="display: none;">
+            <div class="modal">
+                <h3>Edit Location</h3>
+                <p class="modal-subtitle">Save a custom name for this place.</p>
 
                 <div class="input-group">
-                    <label>Date</label>
-                    <input type="date" id="entry-date" required>
-                </div>
-
-                <div class="row">
-                    <div class="input-group">
-                        <label>Start Time</label>
-                        <input type="time" id="entry-start-time" required>
+                    <label for="location-input">Name</label>
+                    <input type="text" id="location-input" list="location-suggestions"
+                        placeholder="e.g. Home, Office, Gym..." autocomplete="off">
+                    <div style="text-align: right; margin-top: 5px;">
+                        <button id="btn-auto-detect" class="btn secondary small"
+                            style="font-size: 0.8rem; padding: 4px 8px;" type="button">📍 Auto-Detect Name
+                            (OSM)</button>
                     </div>
-                    <div class="input-group">
-                        <label>End Time</label>
-                        <input type="time" id="entry-end-time" required>
-                    </div>
-                </div>
-
-                <!-- Stationary Fields -->
-                <div id="fields-stationary">
-                    <div class="input-group">
-                        <label>Location Name</label>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="text" id="entry-loc-name" placeholder="e.g. Home, Office" style="flex:1;">
-                            <button type="button" id="btn-pick-loc" class="btn secondary small">🗺️</button>
-                        </div>
-                    </div>
-                    <!-- Hidden Coords -->
-                    <input type="hidden" id="entry-lat">
-                    <input type="hidden" id="entry-lng">
-                </div>
-
-                <!-- Moving Fields -->
-                <div id="fields-moving" style="display: none;">
-                    <div class="input-group">
-                        <label>Start From</label>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="text" id="entry-start-loc" placeholder="Starting Point" style="flex:1;">
-                            <button type="button" id="btn-pick-start" class="btn secondary small">🗺️</button>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label>Destination</label>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="text" id="entry-end-loc" placeholder="Destination" style="flex:1;">
-                            <button type="button" id="btn-pick-end" class="btn secondary small">🗺️</button>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label>Activity</label>
-                        <select id="entry-activity">
-                            <option value="IN_PASSENGER_VEHICLE">Car / Vehicle</option>
-                            <option value="WALKING">Walking</option>
-                            <option value="CYCLING">Cycling</option>
-                            <option value="IN_TRAIN">Train</option>
-                            <option value="IN_BUS">Bus</option>
-                            <option value="FLYING">Flying</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label>Description (Optional)</label>
-                    <textarea id="entry-desc" rows="3" placeholder="What happened here?"></textarea>
+                    <datalist id="location-suggestions">
+                        <!-- Dynamic suggestions will be populated here -->
+                    </datalist>
                 </div>
 
                 <div class="modal-actions">
-                    <button type="button" id="btn-cancel-entry" class="btn secondary">Cancel</button>
-                    <button type="submit" class="btn primary">Save Entry</button>
+                    <button id="btn-modal-cancel" class="btn secondary">Cancel</button>
+                    <button id="btn-modal-save" class="btn primary">Save</button>
                 </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Data Management Modal -->
-    <div id="data-management-modal" class="modal-overlay" style="display: none;">
-        <div class="modal" style="max-width: 500px; border-top: 5px solid #d32f2f;">
-            <h3 style="color: #d32f2f;">Manage Data</h3>
-            <p style="color: #666; margin-bottom: 20px;">Use these tools to delete data. <strong>Actions cannot be
-                    undone.</strong></p>
-
-            <div class="input-group" style="padding: 15px; background: #fff5f5; border-radius: 8px;">
-                <label style="color: #d32f2f;">Delete by Date Range</label>
-                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                    <input type="date" id="manage-date-from">
-                    <input type="date" id="manage-date-to">
-                </div>
-                <button id="btn-delete-range" class="btn"
-                    style="margin-top: 10px; background: #ef5350; color: white; width: 100%;">Delete Range</button>
-            </div>
-
-            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
-
-            <div class="input-group">
-                <label>Reset Application</label>
-                <p class="small">Clears strictly EVERYTHING from the database.</p>
-                <button id="btn-nuke-all" class="btn"
-                    style="background: #b71c1c; color: white; width: 100%; margin-top: 5px;">⚠️ DELETE
-                    EVERYTHING</button>
-            </div>
-
-            <div class="modal-actions">
-                <button id="btn-close-manage" class="btn secondary">Close</button>
             </div>
         </div>
-    </div>
-    </section>
 
-    <!-- View 4: Stats Dashboard -->
-    <!-- View 4: Stats Dashboard -->
-    <section id="view-analytics">
-        <header class="book-header">
-            <button class="nav-btn" onclick="switchView('book')">← Back to Diary</button>
-            <h2>📊 Life Analytics</h2>
-            <div class="actions">
-                <!-- Settings Button (for radius etc) -->
-                <button id="btn-settings" class="nav-btn secondary" title="Settings">⚙️</button>
+        <!-- Map Modal -->
+        <div id="map-modal" class="modal-overlay" style="display: none;">
+            <div class="map-modal-content"
+                style="background: white; padding: 1rem; border-radius: 12px; position: relative;">
+                <h3 style="margin: 0 0 1rem 0; font-family: 'Georgia', serif; color: #444;">Journey Map</h3>
+                <div id="map-container" style="border-radius: 8px; border: 1px solid #ddd;"></div>
+                <button class="close-btn btn secondary" style="align-self: flex-end; margin-top: 1rem;">Close</button>
             </div>
-        </header>
-        <div id="analytics-content">
-            <!-- Dashboard Grid -->
-            <div class="dashboard-grid">
-                <!-- Top Row: Big Numbers -->
-                <div id="stat-cards" class="stat-cards-container">
-                    <!-- Filled by JS -->
+        </div>
+
+        <!-- Import Options Modal -->
+        <div id="import-modal" class="modal-overlay" style="display: none;">
+            <div class="modal" style="max-width: 500px;">
+                <h3 style="margin-bottom: 10px;">Import JSON Data</h3>
+                <p id="import-summary" style="margin-bottom: 20px; color: #666; font-size: 0.9em;"></p>
+
+                <div class="input-group">
+                    <label>Import Mode</label>
+                    <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                        <label style="font-weight: normal; cursor: pointer;">
+                            <input type="radio" name="import-mode" value="merge" checked>
+                            <strong>Merge</strong> (Keep existing Notes)
+                        </label>
+                        <label style="font-weight: normal; cursor: pointer;">
+                            <input type="radio" name="import-mode" value="replace">
+                            <strong>Replace</strong> (Overwrite collisions)
+                        </label>
+                    </div>
                 </div>
 
-                <!-- Middle Row: Charts -->
-                <div class="chart-container box-style">
-                    <h3>Modes of Transport</h3>
-                    <div style="height: 300px; position: relative;">
-                        <canvas id="modeChart"></canvas>
+                <!-- Future: Date Range Filter could go here -->
+                <div class="input-group">
+                    <label>Filter by Date Range (Optional)</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="date" id="import-date-from" style="flex:1;">
+                        <input type="date" id="import-date-to" style="flex:1;">
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button id="btn-import-cancel" class="btn secondary">Cancel</button>
+                    <button id="btn-import-confirm" class="btn primary">Start Import</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="export-overlay"
+            style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; text-align: center;">
+            <div style="font-size: 4em; margin-bottom: 20px;">🖨️</div>
+            <h2 style="font-family: inherit; color: #333; margin: 0 0 10px;">Preparing PDF...</h2>
+            <p style="color: #666; max-width: 400px; line-height: 1.5;">Please wait while we render your diary.</p>
+            <div
+                style="margin-top: 30px; padding: 15px; background: #e8f5e9; border-radius: 8px; color: #2e7d32; border: 1px solid #c8e6c9;">
+                <strong>Next Step:</strong><br>When the system dialog appears,<br>choose "Save as PDF".
+            </div>
+        </div>
+
+        <!-- Location Picker Modal -->
+        <div id="location-picker-modal" class="modal-overlay" style="display: none; z-index: 10001;">
+            <div class="modal"
+                style="width: 90%; height: 80%; max-width: 800px; display: flex; flex-direction: column;">
+                <h3>Pick a Location</h3>
+                <p class="small" style="margin-bottom: 10px;">Click on the map to select a point.</p>
+                <div id="picker-map" style="flex: 1; border: 1px solid #ddd; border-radius: 4px; background: #eee;">
+                </div>
+                <div class="modal-actions" style="margin-top: 10px;">
+                    <button id="btn-picker-cancel" class="btn secondary">Cancel</button>
+                    <button id="btn-picker-confirm" class="btn primary">Confirm Selection</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manual Entry Modal -->
+        <div id="manual-entry-modal" class="modal-overlay" style="display: none;">
+            <div class="modal" style="max-width: 600px;">
+                <h3>Add New Entry</h3>
+                <form id="manual-entry-form">
+                    <div class="tab-group">
+                        <button type="button" class="tab-btn active" data-tab="stationary">📍 Stay</button>
+                        <button type="button" class="tab-btn" data-tab="moving">🚗 Journey</button>
+                        <input type="hidden" id="entry-type" value="stationary">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Date</label>
+                        <input type="date" id="entry-date" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="input-group">
+                            <label>Start Time</label>
+                            <input type="time" id="entry-start-time" required>
+                        </div>
+                        <div class="input-group">
+                            <label>End Time</label>
+                            <input type="time" id="entry-end-time" required>
+                        </div>
+                    </div>
+
+                    <!-- Stationary Fields -->
+                    <div id="fields-stationary">
+                        <div class="input-group">
+                            <label>Location Name</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="entry-loc-name" placeholder="e.g. Home, Office" style="flex:1;">
+                                <button type="button" id="btn-pick-loc" class="btn secondary small">🗺️</button>
+                            </div>
+                        </div>
+                        <!-- Hidden Coords -->
+                        <input type="hidden" id="entry-lat">
+                        <input type="hidden" id="entry-lng">
+                    </div>
+
+                    <!-- Moving Fields -->
+                    <div id="fields-moving" style="display: none;">
+                        <div class="input-group">
+                            <label>Start From</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="entry-start-loc" placeholder="Starting Point" style="flex:1;">
+                                <button type="button" id="btn-pick-start" class="btn secondary small">🗺️</button>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>Destination</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="entry-end-loc" placeholder="Destination" style="flex:1;">
+                                <button type="button" id="btn-pick-end" class="btn secondary small">🗺️</button>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>Activity</label>
+                            <select id="entry-activity">
+                                <option value="IN_PASSENGER_VEHICLE">Car / Vehicle</option>
+                                <option value="WALKING">Walking</option>
+                                <option value="CYCLING">Cycling</option>
+                                <option value="IN_TRAIN">Train</option>
+                                <option value="IN_BUS">Bus</option>
+                                <option value="FLYING">Flying</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Description (Optional)</label>
+                        <textarea id="entry-desc" rows="3" placeholder="What happened here?"></textarea>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" id="btn-cancel-entry" class="btn secondary">Cancel</button>
+                        <button type="submit" class="btn primary">Save Entry</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Data Management Modal -->
+        <div id="data-management-modal" class="modal-overlay" style="display: none;">
+            <div class="modal" style="max-width: 500px; border-top: 5px solid #d32f2f;">
+                <h3 style="color: #d32f2f;">Manage Data</h3>
+                <p style="color: #666; margin-bottom: 20px;">Use these tools to delete data. <strong>Actions cannot be
+                        undone.</strong></p>
+
+                <div class="input-group" style="padding: 15px; background: #fff5f5; border-radius: 8px;">
+                    <label style="color: #d32f2f;">Delete by Date Range</label>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <input type="date" id="manage-date-from">
+                        <input type="date" id="manage-date-to">
+                    </div>
+                    <button id="btn-delete-range" class="btn"
+                        style="margin-top: 10px; background: #ef5350; color: white; width: 100%;">Delete Range</button>
+                </div>
+
+                <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+
+                <div class="input-group">
+                    <label>Reset Application</label>
+                    <p class="small">Clears strictly EVERYTHING from the database.</p>
+                    <button id="btn-nuke-all" class="btn"
+                        style="background: #b71c1c; color: white; width: 100%; margin-top: 5px;">⚠️ DELETE
+                        EVERYTHING</button>
+                </div>
+
+                <div class="modal-actions">
+                    <button id="btn-close-manage" class="btn secondary">Close</button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- View 3: Archives -->
+        <section id="view-archives">
+            <header class="book-header">
+                <button id="btn-back-arch" class="nav-btn">← Back to Diary</button>
+                <h2>📚 Archive Browser</h2>
+                <div class="actions"></div>
+            </header>
+            <div style="padding: 2rem;">
+                <p>Select a month to view:</p>
+                <div id="archives-grid" class="months-grid">
+                    <!-- Javascript populates this -->
+                </div>
+            </div>
+        </section>
+
+        <!-- View 4: Stats Dashboard -->
+        <!-- (Stats Section) -->
+
+        <!-- View 6: Legacy Binder -->
+        <section id="view-binder">
+            <header class="book-header">
+                <button class="nav-btn" onclick="switchView('book')">← Back to Diary</button>
+                <h2>Legacy Binder</h2>
+                <div class="actions">
+                    <select id="binder-member-select" class="nav-btn secondary" style="min-width: 150px;">
+                        <!-- Populated by JS -->
+                    </select>
+                    <button id="btn-add-member" class="nav-btn small" title="Add Family Member">➕ 👤</button>
+                    <button id="btn-edit-member" class="nav-btn small" title="Rename Member">✎</button>
+                    <button id="btn-delete-member" class="nav-btn small" title="Delete Member"
+                        style="color:#d32f2f;">❌</button>
+
+                    <div style="width: 20px;"></div> <!-- Spacer -->
+
+                    <button id="btn-binder-search" class="nav-btn secondary">🔍 Search</button>
+                    <button id="btn-binder-export" class="nav-btn secondary">📤 Backup</button>
+                    <button id="btn-binder-print" class="nav-btn secondary" title="Print to PDF">🖨️ Print</button>
+                    <button id="btn-binder-save-template" class="nav-btn secondary"
+                        title="Save Structure as Template">💾 Tpl</button>
+                </div>
+            </header>
+
+            <div class="binder-container">
+                <!-- Sidebar: Tree -->
+                <div class="binder-sidebar">
+                    <div class="binder-header-actions">
+                        <button id="btn-add-section" class="btn small primary" style="flex:1;">+ Section</button>
+                        <button id="btn-collapse-all" class="btn small secondary" title="Collapse All">➖</button>
+                    </div>
+                    <div id="binder-tree-root" class="tree-root">
+                        <!-- Tree Nodes Go Here -->
+                        <div class="empty-state small">Select a member to view sections.</div>
+                    </div>
+
+                    <!-- Dashboard Widget -->
+                    <div id="binder-dashboard" style="margin-top: auto; padding-top: 20px; border-top: 1px solid #eee;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <h4 style="margin: 0; color: #d32f2f; font-size: 0.9em;">Upcoming Alerts</h4>
+                            <button id="btn-refresh-alerts" class="btn-icon-small"
+                                title="Check Validity Now">🔄</button>
+                        </div>
+                        <div id="binder-alerts-list">
+                            <div style="font-size: 0.8rem; color: #999;">No upcoming expiries.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content: Fields -->
+                <div class="binder-content">
+                    <div id="binder-content-header" class="content-header">
+                        <h3 id="current-section-title" class="content-title">Select a Section</h3>
+                        <div class="content-toolbar">
+                            <button id="btn-add-sub-section" class="btn secondary" disabled
+                                title="Add a sub-folder inside this section">+ Sub-Section</button>
+                            <button id="btn-add-field" class="btn primary" disabled
+                                title="Add a new data field (Text, Date, Password)">+ Add Field</button>
+                            <button id="btn-duplicate-section" class="btn secondary" disabled
+                                title="Duplicate this section (Copy)">📋 Copy</button>
+                            <button id="btn-edit-section" class="btn secondary" disabled title="Rename this section">✎
+                                Edit</button>
+                            <button id="btn-delete-section" class="btn danger" disabled
+                                title="Delete this section and everything in it">🗑️</button>
+                        </div>
+                    </div>
+
+                    <div id="binder-fields-container" class="fields-grid">
+                        <div class="empty-state">
+                            <p>Select a section from the left sidebar to view details.</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Bottom Row: Heatmap -->
-            <div class="heatmap-container box-style" style="margin-top: 2rem;">
-                <h3>Daily Activity Heatmap</h3>
-                <div id="activity-heatmap" class="heatmap-grid">
-                    <!-- CSS Grid cells -->
+            <!-- Modals for Binder -->
+            <!-- Add/Edit Node Modal -->
+            <div id="binder-node-modal" class="modal-overlay" style="display: none;">
+                <div class="modal binder-modal" style="max-width: 400px;">
+                    <h3 id="binder-modal-title">Add New</h3>
+                    <div class="input-group">
+                        <label>Title / Label</label>
+                        <input type="text" id="binder-node-title" placeholder="e.g. Health Insurance">
+                    </div>
+
+                    <div id="field-options" style="display: none;">
+                        <div class="input-group">
+                            <label>Field Type</label>
+                            <select id="binder-field-type">
+                                <option value="text">Text</option>
+                                <option value="date">Date</option>
+                                <option value="number">Number</option>
+                                <option value="asset">Asset (Positive Balance)</option>
+                                <option value="liability">Liability (Negative Balance)</option>
+                                <option value="password">Password / Secure</option>
+                                <option value="note">Long Note</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Value</label>
+                            <input type="text" id="binder-field-value" placeholder="Enter value...">
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button id="btn-binder-cancel" class="btn secondary">Cancel</button>
+                        <button id="btn-binder-save" class="btn primary">Save</button>
+                    </div>
                 </div>
             </div>
 
-            <div id="text-stats-fallback"></div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Help Modal -->
-    <div id="help-modal" class="modal-overlay" style="display: none; align-items: center; justify-content: center;">
-        <div class="modal-content" style="max-width: 600px;">
-            <h2>How to get your data</h2>
-            <ol style="line-height: 1.8; margin: 1rem 0; padding-left: 1.5rem;">
-                <li>Go to <a href="https://takeout.google.com/" target="_blank">Google Takeout</a>.</li>
-                <li>Deselect all, then select only <strong>Location History (Timeline)</strong>.</li>
-                <li>Click <strong>Next Step</strong> and choose "Export once".</li>
-                <li>Download the ZIP file and extract it.</li>
-                <li>Look for a file named <code>Records.json</code> (or year files like <code>2024_JANUARY.json</code>).
-                </li>
-                <li>Drag that file into this app!</li>
-            </ol>
-            <p style="font-size: 0.9rem; color: #666; margin-top: 1rem;">
-                browser.
-            </p>
-            <div style="margin-top: 2rem; display: flex; justify-content: space-between; align-items: center;">
-                <a href="USER_MANUAL.html" target="_blank" class="btn secondary" style="text-decoration: none;">📖 Open
-                    Full Guide</a>
-                <button class="btn primary" id="btn-help-close">Close</button>
+        <!-- View 5: Archives -->
+        <section id="view-analytics">
+            <header class="book-header">
+                <button class="nav-btn" onclick="switchView('book')">← Back to Diary</button>
+                <h2>📊 Life Analytics</h2>
+                <div class="actions">
+                    <!-- Settings Button (for radius etc) -->
+                    <!-- Settings Button (for radius etc) -->
+                    <button id="btn-analytics-settings" class="nav-btn secondary" title="Settings">⚙️</button>
+                </div>
+            </header>
+            <div id="analytics-content">
+                <!-- Dashboard Grid -->
+                <div class="dashboard-grid">
+                    <!-- Top Row: Big Numbers -->
+                    <div id="stat-cards" class="stat-cards-container">
+                        <!-- Filled by JS -->
+                    </div>
+
+                    <!-- Middle Row: Charts -->
+                    <div class="chart-container box-style">
+                        <h3>Modes of Transport</h3>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="modeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Row: Heatmap -->
+                <div class="heatmap-container box-style" style="margin-top: 2rem;">
+                    <h3>Daily Activity Heatmap</h3>
+                    <div id="activity-heatmap" class="heatmap-grid">
+                        <!-- CSS Grid cells -->
+                    </div>
+                </div>
+
+                <div id="text-stats-fallback"></div>
+            </div>
+        </section>
+
+        <!-- Help Modal -->
+        <div id="help-modal" class="modal-overlay" style="display: none; align-items: center; justify-content: center;">
+            <div class="modal-content" style="max-width: 600px;">
+                <h2>How to get your data</h2>
+                <ol style="line-height: 1.8; margin: 1rem 0; padding-left: 1.5rem;">
+                    <li>Go to <a href="https://takeout.google.com/" target="_blank">Google Takeout</a>.</li>
+                    <li>Deselect all, then select only <strong>Location History (Timeline)</strong>.</li>
+                    <li>Click <strong>Next Step</strong> and choose "Export once".</li>
+                    <li>Download the ZIP file and extract it.</li>
+                    <li>Look for a file named <code>Records.json</code> (or year files like
+                        <code>2024_JANUARY.json</code>).
+                    </li>
+                    <li>Drag that file into this app!</li>
+                </ol>
+                <p style="font-size: 0.9rem; color: #666; margin-top: 1rem;">
+                    browser.
+                </p>
+                <div style="margin-top: 2rem; display: flex; justify-content: space-between; align-items: center;">
+                    <a href="USER_MANUAL.html" target="_blank" class="btn secondary" style="text-decoration: none;">📖
+                        Open
+                        Full Guide</a>
+                    <button class="btn primary" id="btn-help-close">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden Input for Photos Fallback (Firefox/Safari) -->
+        <input type="file" id="photos-fallback-input" webkitdirectory directory multiple hidden>
+
+        <!-- Scripts -->
+        <script>
+            // Simple Help Modal Logic
+            const btnHelp = document.getElementById('btn-help-toggle');
+            const btnHelpHeader = document.getElementById('btn-help-header');
+            const modal = document.getElementById('help-modal');
+            const btnClose = document.getElementById('btn-help-close');
+
+            function openHelp() {
+                if (modal) modal.style.display = 'flex';
+            }
+
+            if (btnHelp) btnHelp.addEventListener('click', openHelp);
+            if (btnHelpHeader) btnHelpHeader.addEventListener('click', openHelp);
+
+            if (btnClose && modal) {
+                btnClose.addEventListener('click', () => {
+                    modal.style.display = 'none';
+                });
+            }
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) modal.style.display = 'none';
+                });
+            }
+        </script>
+
+        <!-- Weather Overlay -->
+        <div id="weather-progress" class="weather-overlay" style="display: none;">
+            <div class="fill" style="background: #42a5f5;"></div>
+            <span class="text" style="color: #0d47a1;">Scanning...</span>
+            <button id="btn-weather-pause" style="background:none;border:none;cursor:pointer;font-size:1.2em;"
+                title="Pause">⏸</button>
+            <button id="btn-weather-stop" style="background:none;border:none;cursor:pointer;font-size:1.2em;"
+                title="Stop">⏹</button>
+        </div>
+
+        <!-- Binder Search Modal -->
+        <div id="binder-search-modal" class="modal-overlay" style="display: none;">
+            <div class="modal binder-modal"
+                style="max-width: 600px; height: 80vh; display: flex; flex-direction: column;">
+                <h3>Search Binder</h3>
+                <div class="input-group">
+                    <input type="text" id="binder-search-input" placeholder="Type to search..."
+                        style="font-size: 1.2em; padding: 12px;">
+                </div>
+                <div id="binder-search-results"
+                    style="flex: 1; overflow-y: auto; border: 1px solid #eee; margin-top: 10px; border-radius: 6px; padding: 10px; background: #fafafa;">
+                    <div class="empty-state small">Enter text to search across all members and fields.</div>
+                </div>
+                <div class="modal-actions" style="margin-top: 15px;">
+                    <button id="btn-binder-search-close" class="btn secondary">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- UPDATE NOTIFICATION -->
+        <div id="update-notification"
+            style="display: none; position: fixed; bottom: 20px; right: 20px; background: #333; color: white; padding: 15px 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 20000; align-items: center; gap: 15px;">
+            <span>🔄 New Version Available!</span>
+            <button id="btn-refresh-app"
+                style="background: #4CAF50; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold;">Refresh</button>
+            <button id="btn-dismiss-update"
+                style="background: transparent; border: 1px solid #777; color: #ccc; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-left: 5px;">Dismiss</button>
+        </div>
+
+        <!-- Scripts -->
+        <script src="js/locales.js"></script>
+        <script src="js/photos.js"></script>
+        <script src="js/ai.js"></script>
+        <script src="js/parser.js?v=6"></script>
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal-overlay" style="display: none;">
+            <div class="modal" style="max-width: 500px; text-align: center;">
+                <h2 style="margin-bottom: 5px; font-family: 'Merriweather', serif; color: #2c3e50;">Locomotion Diary
+                </h2>
+                <p id="settings-version-display" style="color: #7f8c8d; font-size: 0.9em; margin-bottom: 20px;">Version
+                    Loading...</p>
+
+                <div class="input-group" style="text-align: left; margin-bottom: 20px;">
+                    <label>📍 Association Radius (meters)</label>
+                    <p class="small">Distance to group locations together.</p>
+                    <input type="number" id="setting-radius" value="150" min="10" max="5000">
+                </div>
+
+                <div class="input-group" style="text-align: left; margin-bottom: 20px;">
+                    <label>🔄 Update Server URL</label>
+                    <input type="text" id="setting-update-url" placeholder="https://example.com/version.json">
+                </div>
+
+                <div class="modal-actions" style="justify-content: center; gap: 10px;">
+                    <button id="btn-check-updates" class="btn primary" style="background: #3498db;">Check for
+                        Updates</button>
+                </div>
+
+                <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+                    <button id="btn-force-reload" class="btn secondary" style="font-size: 0.9em;">🔄 Force Reload
+                        App</button>
+                    <button id="btn-settings-close" class="btn secondary">Done</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Global App Lock Screen -->
+    <div id="app-lock-screen"
+        style="display: none; position: fixed; inset: 0; z-index: 10000; background: #2c3e50; align-items: center; justify-content: center; flex-direction: column;">
+        <div class="lock-card"
+            style="background: white; padding: 40px; border-radius: 20px; text-align: center; width: 90%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+            <div style="font-size: 4rem; margin-bottom: 20px;">🔒</div>
+            <h2 id="lock-title" style="margin: 0 0 10px 0; color: #2c3e50; font-family: 'Merriweather', serif;">
+                Locomotion Diary</h2>
+            <p id="lock-message" style="color: #7f8c8d; margin-bottom: 30px;">This diary is secured.</p>
+
+            <div class="input-group">
+                <input type="password" id="auth-password" placeholder="Enter Master Password"
+                    style="font-size: 1.2rem; padding: 15px; text-align: center; margin-bottom: 20px; width: 100%; box-sizing: border-box; border: 2px solid #ddd; border-radius: 8px;">
+            </div>
+
+            <button id="btn-unlock-app" class="btn primary"
+                style="width: 100%; padding: 15px; font-size: 1.1rem; justify-content: center;">Unlock</button>
+
+            <p id="auth-error" style="color: #e74c3c; margin-top: 15px; min-height: 20px; font-size: 0.9em;"></p>
+
+            <div id="auth-setup-note"
+                style="display: none; margin-top: 20px; background: #e8f5e9; padding: 15px; border-radius: 8px; color: #2e7d32; font-size: 0.9em;">
+                <strong>First Time Setup:</strong><br>Create a Master Password to encrypt your data.
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Scripts (Moved to bottom to ensure DOM is ready) -->
+    <!-- Scripts (Moved to bottom to ensure DOM is ready) -->
+    <script src="js/db.js?v=9"></script>
+    <script src="js/stats.js?v=9"></script>
+    <script src="js/weather.js?v=7"></script>
+    <script src="js/version.js"></script>
+    <script src="js/security-monitor.js"></script> <!-- Security Suite (New) -->
+    <script src="js/webauthn-helper.js"></script> <!-- Biometrics (New) -->
+    <script src="js/manual-entry.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/places.js?v=2"></script>
+    <script src="js/crypto-helper.js?v=1"></script>
+    <script src="binder_template.js?v=2"></script>
+    <script src="js/binder.js?v=4"></script>
+    <script src="js/recovery.js?v=2"></script>
+    <script src="js/binder-ui.js?v=4"></script>
+    <script src="js/binder-print.js?v=4"></script>
+    <script src="js/app_v2.js?v=303"></script>
+    <script src="js/auth.js?v=3"></script>
+
     <script>
-        // Simple Help Modal Logic
-        const btnHelp = document.getElementById('btn-help-toggle');
-        const btnHelpHeader = document.getElementById('btn-help-header');
-        const modal = document.getElementById('help-modal');
-        const btnClose = document.getElementById('btn-help-close');
-
-        function openHelp() {
-            if (modal) modal.style.display = 'flex';
-        }
-
-        if (btnHelp) btnHelp.addEventListener('click', openHelp);
-        if (btnHelpHeader) btnHelpHeader.addEventListener('click', openHelp);
-
-        if (btnClose && modal) {
-            btnClose.addEventListener('click', () => {
-                modal.style.display = 'none';
-            });
-        }
-        if (modal) {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) modal.style.display = 'none';
-            });
-        }
-    </script>
-
-    <!-- Weather Overlay -->
-    <div id="weather-progress" class="weather-overlay" style="display: none;">
-        <div class="fill" style="background: #42a5f5;"></div>
-        <span class="text" style="color: #0d47a1;">Scanning...</span>
-        <button id="btn-weather-pause" style="background:none;border:none;cursor:pointer;font-size:1.2em;"
-            title="Pause">⏸</button>
-        <button id="btn-weather-stop" style="background:none;border:none;cursor:pointer;font-size:1.2em;"
-            title="Stop">⏹</button>
-    </div>
-
-    <!-- Scripts -->
-    <script src="js/parser.js?v=5"></script>
-    <script src="js/db.js?v=5"></script>
-    <script src="js/stats.js?v=8"></script>
-    <script src="js/weather.js?v=5"></script>
-    <script src="js/manual-entry.js?v=5"></script>
-    <script src="js/app.js?v=5"></script>
-    <script src="sw.js"></script>
-    <script>
-        // SAFE SERVICE WORKER HANDLING (try-catch for file:// protocol)
-        try {
-            if (window.location.protocol.indexOf('http') === 0 && 'serviceWorker' in navigator) {
+        // SAFE SERVICE WORKER CLEANUP (Force Removal)
+        if ('serviceWorker' in navigator) {
+            try {
                 navigator.serviceWorker.getRegistrations().then(function (registrations) {
                     for (let registration of registrations) {
                         registration.unregister();
-                        console.log('Service Worker Unregistered');
+                        console.log("Service Worker Unregistered");
+                    }
+                }).catch(function (err) {
+                    // Suppress 'null' origin errors (local file system)
+                    if (err.name === 'SecurityError' && err.message.includes('null')) {
+                        console.log("SW Cleanup: Skipped (File Protocol)");
+                    } else {
+                        console.warn("SW Cleanup Error:", err);
                     }
                 });
-                // Also explicitly clear caches
-                if ('caches' in window) {
-                    caches.keys().then(function (names) {
-                        for (let name of names) {
-                            caches.delete(name);
-                            console.log('Cache Deleted:', name);
-                        }
-                    });
-                }
-            } else {
-                console.log("Skipping Service Worker cleanup (Local Mode)");
+            } catch (e) {
+                console.warn("SW Cleanup Error (Sync):", e);
             }
-        } catch (e) {
-            console.log("SW Cleanup harmless error:", e);
         }
     </script>
 </body>

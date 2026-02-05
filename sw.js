@@ -1,4 +1,9 @@
-const CACHE_NAME = 'locomotion-diary-v8';
+// Import the shared version file
+importScripts('./js/version.js');
+
+// Use the version from version.js (APP_VERSION)
+const CACHE_NAME = 'locomotion-diary-v' + (typeof APP_VERSION !== 'undefined' ? APP_VERSION : '1.0.0');
+
 const ASSETS = [
     './',
     './index.html',
@@ -8,6 +13,13 @@ const ASSETS = [
     './js/parser.js',
     './js/db.js',
     './js/stats.js',
+    './js/version.js',
+    './js/weather.js',
+    './js/manual-entry.js',
+    './js/map.js',
+    './js/locales.js',
+    './js/photos.js',
+    './js/ai.js',
     './USER_MANUAL.html',
     './manifest.json',
     'https://cdn.jsdelivr.net/npm/chart.js',
@@ -16,10 +28,7 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', (e) => {
-    self.skipWaiting();
-    e.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
-    );
+    self.skipWaiting(); // Activate immediately
 });
 
 self.addEventListener('activate', (e) => {
@@ -35,8 +44,28 @@ self.addEventListener('activate', (e) => {
     self.clients.claim();
 });
 
+// Network-First Strategy
 self.addEventListener('fetch', (e) => {
     e.respondWith(
-        caches.match(e.request).then((response) => response || fetch(e.request))
+        fetch(e.request)
+            .then((response) => {
+                // Check if we received a valid response
+                if (!response || response.status !== 200 || response.type !== 'basic') {
+                    return response;
+                }
+
+                // Clone the response
+                const responseToCache = response.clone();
+
+                caches.open(CACHE_NAME)
+                    .then((cache) => {
+                        cache.put(e.request, responseToCache);
+                    });
+
+                return response;
+            })
+            .catch(() => {
+                return caches.match(e.request);
+            })
     );
 });
