@@ -61,7 +61,9 @@ async function parseTimeline(input) {
                             // Try to find a name or address
                             name: seg.visit.location?.name || seg.visit.location?.address || "Unknown Place",
                             address: seg.visit.location?.address
-                        }
+                        },
+                        // Mix in ALL raw properties so parseVisit can find topCandidate
+                        ...seg.visit
                     };
                     events.push(parseVisit(visitObj));
                 }
@@ -135,76 +137,95 @@ async function parseTimeline(input) {
 }
 
 function parseActivity(segment) {
-    const start = new Date(parseInt(segment.duration.startTimestampMs));
-    const end = new Date(parseInt(segment.duration.endTimestampMs));
-    const type = segment.activityType || 'MOVING';
+    const start = new Date(segment.duration?.startTimestampMs ? parseInt(segment.duration.startTimestampMs) : segment.startTime);
+    const end = new Date(segment.duration?.endTimestampMs ? parseInt(segment.duration.endTimestampMs) : segment.endTime);
+
+    // Activity Type
+    const type = segment.activityType || (segment.topCandidate?.type) || 'MOVING';
     const cleanType = type.replace('IN_', '').replace('_', ' ').toLowerCase();
 
-    let startLoc = segment.startLocation && segment.startLocation.name ? segment.startLocation.name : 'Unknown location';
-    let endLoc = segment.endLocation && segment.endLocation.name ? segment.endLocation.name : 'Unknown destination';
-    const narrative = `Started from ${startLoc}. Traveled by ${cleanType} to ${endLoc}.`;
+    // 1. Extract Locations (Robust)
+    // Try explicit start/end first, then fall back to activity wrapper fields
+    const startObj = segment.startLocation || segment.activity?.start || segment.start;
+    const endObj = segment.endLocation || segment.activity?.end || segment.end;
 
-    // 1. EXTRACT PATH (Priority 1)
+    // Names
+    const startLocName = startObj?.name || "Unknown location";
+    const endLocName = endObj?.name || "Unknown destination";
+
+    let narrative = `Started from ${startLocName}. Traveled by ${cleanType} to ${endLocName}.`;
+
+    // 2. Extract Coordinates (Deep Search)
+    // We search the specific start/end objects first
+    let startCoords = extractBestCoordinates(startObj);
+    let endCoords = extractBestCoordinates(endObj);
+
+    // Fallback: Check Parking for End Coords
+    if (!endCoords && segment.parking || segment.activity?.parking) {
+        const parking = segment.parking || segment.activity?.parking;
+        endCoords = extractBestCoordinates(parking?.location || parking);
+    }
+
+    // 3. Extract Path
     let path = [];
-    if (segment.waypointPath && segment.waypointPath.waypoints) {
-        path = segment.waypointPath.waypoints.map(wp => ({ lat: wp.latE7 / 1e7, lng: wp.lngE7 / 1e7 }));
-    } else if (segment.simplifiedRawPath && segment.simplifiedRawPath.points) {
-        path = segment.simplifiedRawPath.points.map(p => ({ lat: p.latE7 / 1e7, lng: p.lngE7 / 1e7 }));
-    } else if (segment.timelinePath && segment.timelinePath.points) {
-        path = segment.timelinePath.points.map(p => ({ lat: p.latE7 / 1e7, lng: p.lngE7 / 1e7 }));
+    // Helper to converting "lat, lng" string to {lat, lng} object
+    const parsePoint = (p) => {
+        let coords = null;
+        if (p.latE7) coords = { lat: p.latE7 / 1e7, lng: p.lngE7 / 1e7 };
+        else if (p.point) coords = extractBestCoordinates({ latLng: p.point }); // Re-use logic for "lat, lng" string
+
+        if (coords) {
+            // ATTACH TIME IF AVAILABLE
+            if (p.time) coords.time = p.time;
+            else if (p.timestamp) coords.time = p.timestamp;
+            return coords;
+        }
+        return null;
+    };
+
+    const rawPath = segment.timelinePath || segment.waypointPath || segment.simplifiedRawPath;
+    if (rawPath && Array.isArray(rawPath)) {
+        // Direct array (Timeline.json style sometimes)
+        path = rawPath.map(parsePoint).filter(x => x);
+    } else if (rawPath?.points) {
+        // Object wrapper
+        path = rawPath.points.map(parsePoint).filter(x => x);
+    } else if (rawPath?.waypoints) {
+        path = rawPath.waypoints.map(parsePoint).filter(x => x);
     }
 
-    // 2. EXTRACT COORDINATES (Priority 2)
-    const getLat = (loc) => {
-        if (!loc) return null;
-        if (loc.latitudeE7) return loc.latitudeE7 / 1e7;
-        if (loc.latLng) {
-            try { return parseFloat(loc.latLng.split(',')[0].replace('°', '').trim()); } catch (e) { }
-        }
-        if (loc.name && loc.name.includes(',')) {
-            try {
-                const part = parseFloat(loc.name.split(',')[0].trim());
-                if (!isNaN(part) && Math.abs(part) <= 90) return part;
-            } catch (e) { }
-        }
-        return null;
-    };
-    const getLng = (loc) => {
-        if (!loc) return null;
-        if (loc.longitudeE7) return loc.longitudeE7 / 1e7;
-        if (loc.latLng) {
-            try { return parseFloat(loc.latLng.split(',')[1].replace('°', '').trim()); } catch (e) { }
-        }
-        if (loc.name && loc.name.includes(',')) {
-            try {
-                const part = parseFloat(loc.name.split(',')[1].trim());
-                if (!isNaN(part) && Math.abs(part) <= 180) return part;
-            } catch (e) { }
-        }
-        return null;
-    };
-
-    let startLat = getLat(segment.startLocation);
-    let startLng = getLng(segment.startLocation);
-    let endLat = getLat(segment.endLocation);
-    let endLng = getLng(segment.endLocation);
-
-    // 3. FALLBACK: USE PATH FOR COORDINATES (Priority 3)
+    // 4. Fallback: Use Path for Start/End
     if (path.length > 0) {
-        if (!startLat || !startLng) {
-            startLat = path[0].lat;
-            startLng = path[0].lng;
-        }
-        if (!endLat || !endLng) {
-            endLat = path[path.length - 1].lat;
-            endLng = path[path.length - 1].lng;
-        }
+        if (!startCoords) startCoords = path[0];
+        if (!endCoords) endCoords = path[path.length - 1];
     }
 
-    // 4. FALLBACK: GENERATE PATH FROM COORDINATES (Priority 4)
-    if (path.length === 0 && startLat && startLng && endLat && endLng) {
-        path.push({ lat: startLat, lng: startLng });
-        path.push({ lat: endLat, lng: endLng });
+    // 5. Fallback: Deep Search in Wrapper if still null (e.g. Activity object itself has latLng?)
+    // Rare, but sometimes 'segment' itself has 'latitudeE7'
+    if (!startCoords) startCoords = extractBestCoordinates(segment, ['startLocation', 'activity.start']);
+    // ^ checks itself excluding standard sub-objects to avoid loop? No, just check props.
+
+    // 6. Sub-Stop Detection (Intelligent Analysis)
+    const stops = detectSubStops(path);
+    if (stops.length > 0) {
+        const stopDescriptions = stops.map(s => {
+            const mins = Math.round(s.durationMs / 60000);
+            let timeTxt = `${mins} min`;
+            if (mins >= 60) {
+                const h = Math.floor(mins / 60);
+                const m = mins % 60;
+                timeTxt = `${h} hr ${m} min`;
+            }
+            const timeStr = s.startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            return `${timeTxt} stop at ${timeStr}`;
+        });
+
+        // Intelligent Narrative Injection
+        if (stopDescriptions.length === 1) {
+            narrative += ` Includes a ${stopDescriptions[0]}.`;
+        } else {
+            narrative += ` Includes stops: ${stopDescriptions.join(', ')}.`;
+        }
     }
 
     return {
@@ -214,28 +235,120 @@ function parseActivity(segment) {
         narrative: narrative,
         path: path,
         details: segment,
-        startLat: startLat,
-        startLng: startLng,
-        endLat: endLat,
-        endLng: endLng,
+        startLat: startCoords?.lat || null,
+        startLng: startCoords?.lng || null,
+        endLat: endCoords?.lat || null,
+        endLng: endCoords?.lng || null,
         // Helpers for App
-        startLocation: { name: startLoc, mapsLink: `https://www.google.com/maps/search/?api=1&query=${startLat},${startLng}` },
-        endLocation: { name: endLoc, mapsLink: `https://www.google.com/maps/search/?api=1&query=${endLat},${endLng}` },
-        // Add activity info for filtering/stats
+        startLocation: {
+            name: startLocName,
+            mapsLink: startCoords ? `https://www.google.com/maps/search/?api=1&query=${startCoords.lat},${startCoords.lng}` : '#'
+        },
+        endLocation: {
+            name: endLocName,
+            mapsLink: endCoords ? `https://www.google.com/maps/search/?api=1&query=${endCoords.lat},${endCoords.lng}` : '#'
+        },
         activityType: cleanType.toUpperCase(),
         distance: (segment.distanceMeters)
-            || (segment.waypointPath && segment.waypointPath.distanceMeters)
-            || (segment.simplifiedRawPath && segment.simplifiedRawPath.distanceMeters)
-            || segment.distance
-            // Fallback: Haversine Calculation
-            || (startLat && startLng && endLat && endLng ? getDistanceInMeters(startLat, startLng, endLat, endLng) : 0)
+            || (segment.activity?.distanceMeters)
+            || (segment.waypointPath?.distanceMeters)
+            || (segment.simplifiedRawPath?.distanceMeters)
+            || (startCoords && endCoords ? getDistanceInMeters(startCoords.lat, startCoords.lng, endCoords.lat, endCoords.lng) : 0),
+        subStops: stops // Exposed for future UI (e.g. map markers)
     };
 }
 
+/**
+ * Scans a path for periods of stationarity.
+ * @param {Array<{lat, lng, time}>} path 
+ * @returns {Array<{startTime: Date, durationMs: number, lat: number, lng: number}>}
+ */
+function detectSubStops(path) {
+    if (!path || path.length < 2) return [];
+
+    const STOPS = [];
+    const DIST_THRESHOLD = 500; // meters (generous to account for GPS drift)
+    const TIME_THRESHOLD = 10 * 60 * 1000; // 10 minutes
+
+    let clusterStart = path[0];
+    let clusterStartTime = new Date(clusterStart.time || 0).getTime();
+    if (!clusterStart.time) return []; // Cannot detect without time
+
+    for (let i = 1; i < path.length; i++) {
+        const p = path[i];
+        if (!p.time) continue;
+        const pTime = new Date(p.time).getTime();
+
+        const dist = getDistanceInMeters(clusterStart.lat, clusterStart.lng, p.lat, p.lng);
+
+        if (dist < DIST_THRESHOLD) {
+            // Still in cluster, just continue
+        } else {
+            // Movement detected. Check if previous cluster was a stop.
+            // The "Cluster" ended at the PREVIOUS point (i-1)
+            const clusterEndTime = new Date(path[i - 1].time).getTime();
+            const duration = clusterEndTime - clusterStartTime;
+
+            if (duration >= TIME_THRESHOLD) {
+                STOPS.push({
+                    startTime: new Date(clusterStartTime),
+                    durationMs: duration,
+                    lat: clusterStart.lat,
+                    lng: clusterStart.lng
+                });
+            }
+
+            // Start new cluster
+            clusterStart = p;
+            clusterStartTime = pTime;
+        }
+    }
+
+    // Check final cluster
+    const lastP = path[path.length - 1];
+    if (lastP.time) {
+        const lastTime = new Date(lastP.time).getTime();
+        const duration = lastTime - clusterStartTime;
+        if (duration >= TIME_THRESHOLD) {
+            STOPS.push({
+                startTime: new Date(clusterStartTime),
+                durationMs: duration,
+                lat: clusterStart.lat,
+                lng: clusterStart.lng
+            });
+        }
+    }
+
+    return STOPS;
+}
+
 function parseVisit(visit) {
-    const start = new Date(parseInt(visit.duration.startTimestampMs));
-    const end = new Date(parseInt(visit.duration.endTimestampMs));
-    const placeName = visit.location.name || visit.location.address || "Unsaved Place";
+    const start = new Date(visit.duration?.startTimestampMs ? parseInt(visit.duration.startTimestampMs) : visit.startTime);
+    const end = new Date(visit.duration?.endTimestampMs ? parseInt(visit.duration.endTimestampMs) : visit.endTime);
+
+    // 1. Coordinate Extraction (Do this first to use in naming)
+    let coords = extractBestCoordinates(visit.location)
+        || extractBestCoordinates(visit.visit?.location)
+        || extractBestCoordinates(visit.topCandidate) // Check candidate directly
+        || extractBestCoordinates(visit); // Last resort
+
+    // 2. Name Resolution
+    const locationObj = visit.location || visit.visit?.location || visit.topCandidate?.placeLocation || visit;
+    let placeName = locationObj.name || locationObj.address;
+
+    if (!placeName) {
+        // Smart Fallbacks
+        const candidate = visit.topCandidate || visit.visit?.topCandidate;
+        if (candidate?.semanticType && candidate.semanticType !== 'UNKNOWN') {
+            // e.g. "HOME" -> "Home"
+            placeName = candidate.semanticType.charAt(0).toUpperCase() + candidate.semanticType.slice(1).toLowerCase();
+        } else if (coords) {
+            // Coordinate Fallback
+            placeName = `Location near ${coords.lat.toFixed(3)}, ${coords.lng.toFixed(3)}`;
+        } else {
+            placeName = "Unsaved Place";
+        }
+    }
 
     // Duration calculation
     const diffMs = end - start;
@@ -246,15 +359,10 @@ function parseVisit(visit) {
     durStr += `${diffMins} min`;
 
     // Narrative
-    // "Reached [Place]. Spent [duration] here."
     const narrative = `Reached ${placeName}. Spent ${durStr} here.`;
 
-    let lat = null;
-    let lng = null;
-    if (visit.location && visit.location.latitudeE7 && visit.location.longitudeE7) {
-        lat = visit.location.latitudeE7 / 1e7;
-        lng = visit.location.longitudeE7 / 1e7;
-    }
+    const lat = coords?.lat || null;
+    const lng = coords?.lng || null;
 
     return {
         type: 'stationary',
@@ -271,6 +379,70 @@ function parseVisit(visit) {
             address: visit.location?.address || ""
         }
     };
+}
+
+// --- Robust Reference Extractor ---
+/**
+ * Recursively looks for valid coordinates in an object.
+ * Checks: lat/lng E7, latLng string ("9.0°, 77.0°"), point string, geo: URIs
+ * @param {Object} obj The object to search (e.g., location, segment, candidate)
+ * @param {Array<string>} excludeKeys Keys to skip to avoid infinite loops or irrelevance
+ * @returns {{lat: number, lng: number} | null}
+ */
+function extractBestCoordinates(obj, excludeKeys = []) {
+    if (!obj || typeof obj !== 'object') return null;
+
+    // 1. Direct Integer E7
+    if (obj.latitudeE7 && obj.longitudeE7) {
+        return { lat: obj.latitudeE7 / 1e7, lng: obj.longitudeE7 / 1e7 };
+    }
+    if (obj.latE7 && obj.lngE7) {
+        return { lat: obj.latE7 / 1e7, lng: obj.lngE7 / 1e7 };
+    }
+
+    // 2. String Formats (latLng: "9.6°, 77.1°" or point: "...")
+    const parseStringInfo = (str) => {
+        if (!str || typeof str !== 'string') return null;
+        // Remove °, spaces
+        const clean = str.replace(/°/g, '').trim();
+        const parts = clean.split(',');
+        if (parts.length === 2) {
+            const lat = parseFloat(parts[0]);
+            const lng = parseFloat(parts[1]);
+            if (!isNaN(lat) && !isNaN(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180) {
+                return { lat, lng };
+            }
+        }
+        return null;
+    };
+
+    if (obj.latLng) {
+        const res = parseStringInfo(obj.latLng);
+        if (res) return res;
+    }
+    if (obj.point) {
+        const res = parseStringInfo(obj.point);
+        if (res) return res;
+    }
+
+    // 3. Known Nested Objects (1-Level Deep Priority)
+    // Check 'placeLocation', 'location', 'parking', 'topCandidate'
+    const priorityKeys = ['placeLocation', 'location', 'parking', 'topCandidate', 'start', 'end'];
+    for (const key of priorityKeys) {
+        if (obj[key] && !excludeKeys.includes(key)) {
+            // Recurse strictly into priority children
+            const found = extractBestCoordinates(obj[key], excludeKeys); // Pass excludes down? or clear?
+            // Actually, for pure structure drilling, passing is fine.
+            if (found) return found;
+        }
+    }
+
+    // 4. Raw 'geo:' URI? (Rare but possible in KML-derived JSONs)
+    if (obj.geoUri) {
+        // logic if needed
+    }
+
+    return null;
 }
 
 // Distance Helper (Haversine Formula) - Explicitly defined

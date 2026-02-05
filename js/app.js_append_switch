@@ -1,0 +1,28 @@
+
+// --- NAVIGATION LOGIC ---
+function switchView(viewName) {
+    console.log("Switching to view:", viewName);
+    
+    // 1. Hide all sections
+    document.querySelectorAll('section').forEach(s => {
+        s.classList.remove('active');
+        s.style.display = 'none'; // Ensure hidden
+    });
+
+    // 2. Show target section
+    const target = document.getElementById('view-' + viewName);
+    if (target) {
+        target.style.display = 'flex'; // Force visibility
+        target.classList.add('active');
+        
+        // 3. Scroll reset
+        window.scrollTo(0, 0);
+        const scrollContainer = target.querySelector('.scrollable-content') || target.querySelector('#analytics-content');
+        if (scrollContainer) scrollContainer.scrollTop = 0;
+
+    } else {
+        console.error("View target not found:", viewName);
+        alert("Navigation Error: View " + viewName + " not found!");
+    }
+}
+window.switchView = switchView;
