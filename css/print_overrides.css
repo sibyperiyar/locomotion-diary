@@ -1,0 +1,71 @@
+/* RESET: Standard Print Overrides */
+/* This restores the behavior that worked in Chrome: Hide Nav, Show App */
+
+@media print {
+    @page {
+        margin: 1.5cm;
+        size: A4;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        background: white;
+    }
+
+    /* Hide Navigation and UI */
+    .book-header,
+    .nav-btn,
+    .drop-zone,
+    #search-controls,
+    #pagination-controls,
+    .hero-container,
+    #view-onboarding,
+    #view-locations,
+    #view-analytics,
+    #view-binder,
+    .modal-overlay,
+    #export-overlay,
+    .action-btn {
+        display: none !important;
+    }
+
+    /* Ensure App is Visible */
+    #app,
+    #view-book,
+    .book-container,
+    .book-pages {
+        display: block !important;
+        visibility: visible !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+        box-shadow: none !important;
+    }
+
+    /* Content Styling */
+    .diary-entry {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        color: black !important;
+        border-left: none !important;
+        padding-left: 0 !important;
+    }
+
+    .diary-date {
+        color: black !important;
+        font-size: 1.4rem;
+        font-weight: bold;
+        border-bottom: 1px solid black;
+    }
+
+    p,
+    span,
+    div,
+    strong {
+        color: black !important;
+    }
+}
