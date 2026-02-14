@@ -2,13 +2,13 @@
 
 **A private, offline-first travel diary.**
 
-![License](https://img.shields.io/badge/license-Proprietary-red.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 ## 📖 About
 
 Locomotion Diary is a **Progressive Web App (PWA)** that runs entirely in your browser. It is designed to be the "Forever Home" for your location memories.
 
-**Developed by Zetozone for internal and authorized use.**
+**Developed by Siby P Varkey (Zetozone).**
 
 **Two Ways to Use:**
 
@@ -25,15 +25,16 @@ Locomotion Diary is a **Progressive Web App (PWA)** that runs entirely in your b
 
 ## 🚀 Hosting
 
-This app is distributed via **Zetozone**.
+You can host this application on any static web server (GitHub Pages, Netlify, Vercel, or your own Apache/Nginx server).
 
 ## 🤝 Credits
 
-* **Project Owner:** Zetozone
+* **Project Owner:** Siby P Varkey (Zetozone)
 * **Project Lead:** Siby Periyar
 * **Development:** AI Assistance (Google Gemini)
 
 ## 📜 License
 
-**Copyright (c) 2026 Zetozone. All Rights Reserved.**
-Unauthorized copying, modification, distribution, or use of this file, via any medium, is strictly prohibited.
+**Copyright (c) 2026 Siby P Varkey (Zetozone).**
+
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
