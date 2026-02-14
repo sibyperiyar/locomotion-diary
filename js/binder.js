@@ -559,14 +559,14 @@ const BinderManager = {
 
     // --- Template Loader ---
     loadIndianMasterList(memberId) {
-        // ... (Code from previous implementations logic for template loading)
-        // I will just link the file if it was separate, but here it's inside `binder_template.js`.
-        // This function calls `BinderTemplate.getIndianMasterList()`
         let template = [];
         if (typeof window.BINDER_TEMPLATE_DEFAULT !== 'undefined') {
             template = window.BINDER_TEMPLATE_DEFAULT;
         } else if (typeof BinderTemplate !== 'undefined') {
             template = BinderTemplate.getIndianMasterList();
+        }
+
+        if (template && template.length > 0) {
             // We adding to root of member
             // Assume template is array of sections
             // We need to re-ID them to ensure uniqueness

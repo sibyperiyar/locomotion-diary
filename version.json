@@ -1,5 +1,5 @@
 {
-    "version": "1.1.0",
-    "notes": "Added Biometric Unlock, Encrypted Search, and Interactive Maps.",
-    "downloadUrl": "https://www.zetozone.com/locomotion-diary/locomotion-diary-v1.1.0.zip"
+    "version": "1.2.0",
+    "notes": "Added PWA Support (Installable App), Offline Wiki, and Performance improvements.",
+    "downloadUrl": "https://www.zetozone.com/locomotion-diary/locomotion-diary-v1.2.0.zip"
 }

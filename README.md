@@ -1,6 +1,6 @@
 # Locomotion Diary 📍
 
-**A private, offline-first travel diary.**
+**A private, offline-first travel diary & secure document vault.**
 
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
