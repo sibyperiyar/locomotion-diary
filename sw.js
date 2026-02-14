@@ -22,6 +22,7 @@ const ASSETS = [
     './js/ai.js',
     './USER_MANUAL.html',
     './manifest.json',
+    './icon.png',
     'https://cdn.jsdelivr.net/npm/chart.js',
     'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
     'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
