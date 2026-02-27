@@ -20,9 +20,15 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <!-- CSS -->
-    <link rel="manifest" href="manifest.json">
+    <script>
+        if (window.location.protocol !== 'file:') {
+            const link = document.createElement('link');
+            link.rel = 'manifest';
+            link.href = 'manifest.json';
+            document.head.appendChild(link);
+        }
+    </script>
     <link rel="stylesheet" href="css/style.css?v=204">
-    <link rel="stylesheet" href="css/binder.css?v=4">
     <link rel="stylesheet" href="css/stats.css?v=7">
     <meta name="theme-color" content="#f8f5f2">
     <link rel="icon" href="./icon.png">
@@ -194,8 +200,6 @@
                         Stats</button>
                     <button id="btn-archives" class="nav-btn" title="View Archives" data-i18n="btn.archives">📂
                         Archives</button>
-                    <button id="btn-binder" class="nav-btn" style="background-color: #5d4037; color: white;"
-                        title="Legacy Binder">📔 Binder</button>
                     <button id="btn-locations" class="nav-btn" title="Manage Places" data-i18n="btn.locations">📍
                         Places</button>
                     <button id="btn-export" class="nav-btn" title="Save as PDF" data-i18n="btn.export">🖨️ PDF</button>
@@ -514,6 +518,17 @@
 
                 <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
 
+                <div class="input-group" style="padding: 15px; background: #e3f2fd; border-radius: 8px;">
+                    <label style="color: #1565c0;">Password Recovery Kit</label>
+                    <p class="small">Download an offline HTML file containing your Master Password in case you forget
+                        it.</p>
+                    <button id="btn-download-password-kit" class="btn"
+                        style="background: #1976D2; color: white; width: 100%; margin-top: 5px;">🔑 Download Recovery
+                        Kit</button>
+                </div>
+
+                <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+
                 <div class="input-group">
                     <label>Reset Application</label>
                     <p class="small">Clears strictly EVERYTHING from the database.</p>
@@ -546,120 +561,6 @@
 
         <!-- View 4: Stats Dashboard -->
         <!-- (Stats Section) -->
-
-        <!-- View 6: Legacy Binder -->
-        <section id="view-binder">
-            <header class="book-header">
-                <button class="nav-btn" onclick="switchView('book')">← Back to Diary</button>
-                <h2>Legacy Binder</h2>
-                <div class="actions">
-                    <select id="binder-member-select" class="nav-btn secondary" style="min-width: 150px;">
-                        <!-- Populated by JS -->
-                    </select>
-                    <button id="btn-add-member" class="nav-btn small" title="Add Family Member">➕ 👤</button>
-                    <button id="btn-edit-member" class="nav-btn small" title="Rename Member">✎</button>
-                    <button id="btn-delete-member" class="nav-btn small" title="Delete Member"
-                        style="color:#d32f2f;">❌</button>
-
-                    <div style="width: 20px;"></div> <!-- Spacer -->
-
-                    <button id="btn-binder-search" class="nav-btn secondary">🔍 Search</button>
-                    <button id="btn-binder-export" class="nav-btn secondary">📤 Backup</button>
-                    <button id="btn-binder-print" class="nav-btn secondary" title="Print to PDF">🖨️ Print</button>
-                    <button id="btn-binder-save-template" class="nav-btn secondary"
-                        title="Save Structure as Template">💾 Tpl</button>
-                </div>
-            </header>
-
-            <div class="binder-container">
-                <!-- Sidebar: Tree -->
-                <div class="binder-sidebar">
-                    <div class="binder-header-actions">
-                        <button id="btn-add-section" class="btn small primary" style="flex:1;">+ Section</button>
-                        <button id="btn-collapse-all" class="btn small secondary" title="Collapse All">➖</button>
-                    </div>
-                    <div id="binder-tree-root" class="tree-root">
-                        <!-- Tree Nodes Go Here -->
-                        <div class="empty-state small">Select a member to view sections.</div>
-                    </div>
-
-                    <!-- Dashboard Widget -->
-                    <div id="binder-dashboard" style="margin-top: auto; padding-top: 20px; border-top: 1px solid #eee;">
-                        <div
-                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                            <h4 style="margin: 0; color: #d32f2f; font-size: 0.9em;">Upcoming Alerts</h4>
-                            <button id="btn-refresh-alerts" class="btn-icon-small"
-                                title="Check Validity Now">🔄</button>
-                        </div>
-                        <div id="binder-alerts-list">
-                            <div style="font-size: 0.8rem; color: #999;">No upcoming expiries.</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Main Content: Fields -->
-                <div class="binder-content">
-                    <div id="binder-content-header" class="content-header">
-                        <h3 id="current-section-title" class="content-title">Select a Section</h3>
-                        <div class="content-toolbar">
-                            <button id="btn-add-sub-section" class="btn secondary" disabled
-                                title="Add a sub-folder inside this section">+ Sub-Section</button>
-                            <button id="btn-add-field" class="btn primary" disabled
-                                title="Add a new data field (Text, Date, Password)">+ Add Field</button>
-                            <button id="btn-duplicate-section" class="btn secondary" disabled
-                                title="Duplicate this section (Copy)">📋 Copy</button>
-                            <button id="btn-edit-section" class="btn secondary" disabled title="Rename this section">✎
-                                Edit</button>
-                            <button id="btn-delete-section" class="btn danger" disabled
-                                title="Delete this section and everything in it">🗑️</button>
-                        </div>
-                    </div>
-
-                    <div id="binder-fields-container" class="fields-grid">
-                        <div class="empty-state">
-                            <p>Select a section from the left sidebar to view details.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Modals for Binder -->
-            <!-- Add/Edit Node Modal -->
-            <div id="binder-node-modal" class="modal-overlay" style="display: none;">
-                <div class="modal binder-modal" style="max-width: 400px;">
-                    <h3 id="binder-modal-title">Add New</h3>
-                    <div class="input-group">
-                        <label>Title / Label</label>
-                        <input type="text" id="binder-node-title" placeholder="e.g. Health Insurance">
-                    </div>
-
-                    <div id="field-options" style="display: none;">
-                        <div class="input-group">
-                            <label>Field Type</label>
-                            <select id="binder-field-type">
-                                <option value="text">Text</option>
-                                <option value="date">Date</option>
-                                <option value="number">Number</option>
-                                <option value="asset">Asset (Positive Balance)</option>
-                                <option value="liability">Liability (Negative Balance)</option>
-                                <option value="password">Password / Secure</option>
-                                <option value="note">Long Note</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label>Value</label>
-                            <input type="text" id="binder-field-value" placeholder="Enter value...">
-                        </div>
-                    </div>
-
-                    <div class="modal-actions">
-                        <button id="btn-binder-cancel" class="btn secondary">Cancel</button>
-                        <button id="btn-binder-save" class="btn primary">Save</button>
-                    </div>
-                </div>
-            </div>
-
-        </section>
 
         <!-- View 5: Archives -->
         <section id="view-analytics">
@@ -767,25 +668,6 @@
                 title="Stop">⏹</button>
         </div>
 
-        <!-- Binder Search Modal -->
-        <div id="binder-search-modal" class="modal-overlay" style="display: none;">
-            <div class="modal binder-modal"
-                style="max-width: 600px; height: 80vh; display: flex; flex-direction: column;">
-                <h3>Search Binder</h3>
-                <div class="input-group">
-                    <input type="text" id="binder-search-input" placeholder="Type to search..."
-                        style="font-size: 1.2em; padding: 12px;">
-                </div>
-                <div id="binder-search-results"
-                    style="flex: 1; overflow-y: auto; border: 1px solid #eee; margin-top: 10px; border-radius: 6px; padding: 10px; background: #fafafa;">
-                    <div class="empty-state small">Enter text to search across all members and fields.</div>
-                </div>
-                <div class="modal-actions" style="margin-top: 15px;">
-                    <button id="btn-binder-search-close" class="btn secondary">Close</button>
-                </div>
-            </div>
-        </div>
-
         <!-- UPDATE NOTIFICATION -->
         <div id="update-notification"
             style="display: none; position: fixed; bottom: 20px; right: 20px; background: #333; color: white; padding: 15px 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 20000; align-items: center; gap: 15px;">
@@ -878,23 +760,138 @@
     <script src="binder_template.js?v=2"></script>
     <script src="js/binder.js?v=4"></script>
     <script src="js/recovery.js?v=2"></script>
-    <script src="js/binder-ui.js?v=4"></script>
-    <script src="js/binder-print.js?v=4"></script>
     <script src="js/app_v2.js?v=303"></script>
     <script src="js/auth.js?v=3"></script>
 
     <script>
+        // Custom Confirm Dialog to bypass browser popup blockers
+        window.customConfirm = function (message) {
+            return new Promise((resolve) => {
+                const overlay = document.createElement('div');
+                overlay.style.position = 'fixed';
+                overlay.style.inset = '0';
+                overlay.style.backgroundColor = 'rgba(0,0,0,0.8)';
+                overlay.style.zIndex = '999999';
+                overlay.style.display = 'flex';
+                overlay.style.alignItems = 'center';
+                overlay.style.justifyContent = 'center';
+
+                const dialog = document.createElement('div');
+                dialog.style.background = 'white';
+                dialog.style.padding = '30px';
+                dialog.style.borderRadius = '12px';
+                dialog.style.maxWidth = '400px';
+                dialog.style.width = '90%';
+                dialog.style.textAlign = 'center';
+                dialog.style.boxShadow = '0 10px 40px rgba(0,0,0,0.5)';
+
+                const text = document.createElement('p');
+                text.innerText = message;
+                text.style.whiteSpace = 'pre-wrap';
+                text.style.marginBottom = '20px';
+                text.style.color = '#333';
+                text.style.fontSize = '1.1em';
+
+                const btnRow = document.createElement('div');
+                btnRow.style.display = 'flex';
+                btnRow.style.justifyContent = 'center';
+                btnRow.style.gap = '15px';
+
+                const btnYes = document.createElement('button');
+                btnYes.innerText = 'Yes, Proceed';
+                btnYes.style.background = '#e74c3c';
+                btnYes.style.color = 'white';
+                btnYes.style.border = 'none';
+                btnYes.style.padding = '10px 20px';
+                btnYes.style.borderRadius = '6px';
+                btnYes.style.cursor = 'pointer';
+                btnYes.onclick = () => { document.body.removeChild(overlay); resolve(true); };
+
+                const btnNo = document.createElement('button');
+                btnNo.innerText = 'Cancel';
+                btnNo.style.background = '#95a5a6';
+                btnNo.style.color = 'white';
+                btnNo.style.border = 'none';
+                btnNo.style.padding = '10px 20px';
+                btnNo.style.borderRadius = '6px';
+                btnNo.style.cursor = 'pointer';
+                btnNo.onclick = () => { document.body.removeChild(overlay); resolve(false); };
+
+                btnRow.appendChild(btnNo);
+                btnRow.appendChild(btnYes);
+                dialog.appendChild(text);
+                dialog.appendChild(btnRow);
+                overlay.appendChild(dialog);
+
+                document.body.appendChild(overlay);
+            });
+        };
+
+        // Universal Native Save Dialog (bypasses file:// protocol download blockers)
+        window.saveFileLocally = async function (filename, content, contentType) {
+            try {
+                if (window.showSaveFilePicker) {
+                    const ext = filename.split('.').pop();
+                    const types = [];
+                    if (ext === 'json') {
+                        types.push({ description: 'JSON File', accept: { 'application/json': ['.json'] } });
+                    } else if (ext === 'html') {
+                        types.push({ description: 'HTML File', accept: { 'text/html': ['.html'] } });
+                    }
+
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: filename,
+                        types: types.length > 0 ? types : undefined
+                    });
+                    const writable = await handle.createWritable();
+                    await writable.write(content);
+                    await writable.close();
+                    return true;
+                } else {
+                    // Fallback to Data URI if API not available (e.g., Firefox)
+                    const base64Data = btoa(unescape(encodeURIComponent(content)));
+                    const dataUri = `data:${contentType};base64,${base64Data}`;
+                    const a = document.createElement('a');
+                    a.href = dataUri;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => document.body.removeChild(a), 100);
+                    return true;
+                }
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    console.error("Save file failed:", err);
+                    alert("Could not save file. Your browser might be blocking local downloads.");
+                }
+                return false;
+            }
+        };
+
         // PWA SERVICE WORKER REGISTRATION & INSTALLATION LOGIC
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                    })
-                    .catch(err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
+            if (window.location.protocol !== 'file:') {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('sw.js')
+                        .then(registration => {
+                            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                        })
+                        .catch(err => {
+                            console.log('ServiceWorker registration failed: ', err);
+                        });
+                });
+            } else {
+                // If running locally on file://, forcefully UNREGISTER any old service workers
+                // that might be aggressively caching old JavaScript (like recovery.js fixes).
+                navigator.serviceWorker.getRegistrations().then(function (registrations) {
+                    for (let registration of registrations) {
+                        registration.unregister();
+                        console.log("Unregistered old Service Worker to prevent local caching.");
+                    }
+                }).catch(err => {
+                    // Fail silently: file:// protocols throw a SecurityError here.
+                });
+            }
         }
 
         // Install Button Logic
